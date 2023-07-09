@@ -1,0 +1,210 @@
+buildscript {
+    repositories {
+        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://maven.parchmentmc.org' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.parchmentmc:librarian:1.+'
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
+apply plugin: 'maven-publish'
+
+ext {
+    if (!project.hasProperty('manasmodsUsername')) {
+        System.out.println("No ManasMods Repo User found.")
+        //DO NOT WRITE ANYTHING INTO THIS FIELD! ANYONE CEN SEE THIS FIELD!!
+        manasmodsUsername = ""
+    }
+
+    if (!project.hasProperty('manasmodsPassword')) {
+        System.out.println("No ManasMods Repo User password found.")
+        //DO NOT WRITE ANYTHING INTO THIS FIELD! ANYONE CEN SEE THIS FIELD!!
+        manasmodsPassword = ""
+    }
+}
+
+group = 'com.github.manasmods'
+version = "${minecraftVersion}-${modVersion}"
+
+java {
+    archivesBaseName = modId
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+minecraft {
+    mappings channel: 'parchment', version: "${parchmentVersion}-${minecraftVersion}"
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', modId
+
+            mods {
+                //TODO Change template to your mod id
+                template {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', modId
+
+            mods {
+                //TODO Change template to your mod id
+                template {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        gameTestServer {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', modId
+
+            mods {
+                //TODO Change template to your mod id
+                template {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', modId, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'), '--existing-mod', 'manascore'
+
+            mods {
+                //TODO Change template to your mod id
+                template {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+mixin {
+    add sourceSets.main, "${modId}.refmap.json"
+    config "${modId}.mixins.json"
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
+    // flatDir {
+    //     dir 'libs'
+    // }
+
+    maven {
+        url = "https://manasmods.bytesafe.dev/maven/manasmods"
+        name = "manasmods"
+        credentials {
+            username System.getenv().getOrDefault("MANAS_REPO_USER", manasmodsUsername)
+            password System.getenv().getOrDefault("MANAS_REPO_USER_PASSWORD", manasmodsPassword)
+        }
+    }
+}
+
+dependencies {
+    //Minecraft Forge
+    minecraft "net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}"
+    //Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    //Mixins
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    //ManasCore
+    implementation fg.deobf("com.github.manasmods:ManasCore:${minecraftVersion}-${manasCoreVersion}")
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : modId,
+                "Specification-Vendor"    : "ManasMods",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : "ManasMods",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+jar.finalizedBy('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            name = "manasmods"
+            credentials {
+                username System.getenv().getOrDefault("MANAS_REPO_USER", manasmodsUsername)
+                password System.getenv().getOrDefault("MANAS_REPO_USER_PASSWORD", manasmodsPassword)
+            }
+            url "https://manasmods.bytesafe.dev/maven/manasmods"
+        }
+    }
+}
+
+def replaceResources = tasks.register("replaceResources", Copy) {
+    it.outputs.upToDateWhen { false }
+    //Copy it into the build dir
+    it.from(sourceSets.main.resources) {
+        def forgeLoaderVersion = forgeVersion.substring(0, forgeVersion.indexOf('.'))
+        def nextMajorMinecraftVersion = getNextMajorMinecraftVersion(minecraftVersion)
+        def minecraftVersionCheck = "[${minecraftVersion},${nextMajorMinecraftVersion})"
+        def manasVersionCheck = "[${manasCoreVersion},)"
+
+        include "META-INF/mods.toml"
+        expand 'forgeLoaderVersion': "[${forgeLoaderVersion},)", 'issueUrl': "${githubUrl}/issues", 'modId': modId, 'modVersion': modVersion, 'modName': modName, 'minecraftVersionCheck': minecraftVersionCheck, 'manasVersionCheck': manasVersionCheck
+    }
+    it.into "$buildDir/resources/main/"
+}
+
+static String getNextMajorMinecraftVersion(String currentVersion) {
+    def version = currentVersion.substring(0, currentVersion.indexOf('.'))
+    def majorVersion = currentVersion.substring(currentVersion.indexOf('.') + 1, currentVersion.indexOf('.', currentVersion.indexOf('.') + 1))
+    def majorInt = Integer.valueOf(majorVersion)
+    majorInt++
+    majorVersion = majorInt.toString()
+    return "${version}.${majorVersion}"
+}
+
+processResources {
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
+    exclude('META-INF/mods.toml')
+    configure { finalizedBy(replaceResources) }
+}
+
+classes.configure {
+    dependsOn(replaceResources)
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

@@ -1,0 +1,36 @@
+modLoader = "javafml"
+loaderVersion = "${forgeLoaderVersion}" #automatically generated
+license = "All Rights Reserved"
+issueTrackerURL="${issueUrl}" #automatically generated
+[[mods]]
+modId = "${modId}" #automatically generated
+version = "${modVersion}" #automatically generated
+displayName = "${modName}" #automatically generated
+# A URL to query for updates for this mod. See the JSON update specification <here>
+#updateJSONURL="http://myurl.me/" #optional
+# A URL for the "homepage" for this mod, displayed in the mod UI
+#displayURL="http://example.com/" #optional
+# A file name (in the root of the mod JAR) containing a logo for display
+#logoFile="template.png" #optional
+authors = "ManasMods"
+description = '''
+
+'''
+[[dependencies.${modId}]] #automatically generated
+    modId = "forge"
+    mandatory = true
+    versionRange = "${forgeLoaderVersion}" #automatically generated
+    ordering = "NONE"
+    side = "BOTH"
+[[dependencies.${modId}]] #automatically generated
+    modId = "minecraft"
+    mandatory = true
+    versionRange = "${minecraftVersionCheck}" #automatically generated
+    ordering = "NONE"
+    side = "BOTH"
+[[dependencies.${modId}]] #automatically generated
+    modId="manascore"
+    mandatory=true
+    versionRange="${manasVersionCheck}" #automatically generated
+    ordering="NONE"
+    side="BOTH"
