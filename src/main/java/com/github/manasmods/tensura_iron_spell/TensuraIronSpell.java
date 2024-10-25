@@ -1,4 +1,4 @@
-package com.github.manasmods.tensura_iaf;
+package com.github.manasmods.tensura_iron_spell;
 
 import lombok.Getter;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -8,13 +8,13 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(TensuraIaF.MOD_ID)
-public class TensuraIaF {
-    public static final String MOD_ID = "tensura_iaf";
+@Mod(TensuraIronSpell.MOD_ID)
+public class TensuraIronSpell {
+    public static final String MOD_ID = "tensura_iron_spell";
     @Getter
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public TensuraIaF() {
+    public TensuraIronSpell() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     }
 

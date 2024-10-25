@@ -3,24 +3,30 @@ loaderVersion = "${forgeLoaderVersion}"
 license = "All Rights Reserved"
 
 [[mods]]
-modId = "tensura_iaf"
+modId = "tensura_iron_spell"
 version = "${modVersion}"
-displayName = "Tensura Compat: Ice and Fire"
+displayName = "Tensura Compat: Iron's Spells n Spellbooks"
 
 authors = "MinhEragon"
 description = '''
-A Compat mod between Tensura:Reincarnated & Ice and Fire.
+A Compat mod between Tensura:Reincarnated & Iron's Spells n Spellbooks.
 '''
 
-[[dependencies.tensura_iaf]]
+[[dependencies.tensura_iron_spell]]
     modId = "forge"
     mandatory = true
     versionRange = "${forgeLoaderVersion}"
     ordering = "NONE"
     side = "BOTH"
-[[dependencies.tensura_iaf]]
+[[dependencies.tensura_iron_spell]]
     modId = "minecraft"
     mandatory = true
     versionRange = "${minecraftVersionCheck}"
     ordering = "NONE"
     side = "BOTH"
+[[dependencies.tensura_iron_spell]]
+    modId="manascore"
+    mandatory=true
+    versionRange="${manasVersionCheck}"
+    ordering="NONE"
+    side="BOTH"

@@ -50,7 +50,7 @@ minecraft {
             property 'mixin.debug.export', 'true'
 
             mods {
-                tensura_iaf {
+                tensura_iron_spell {
                     source sourceSets.main
                 }
             }
@@ -64,7 +64,7 @@ minecraft {
 
             arg "nogui"
             mods {
-                tensura_iaf {
+                tensura_iron_spell {
                     source sourceSets.main
                 }
             }
@@ -80,7 +80,7 @@ minecraft {
             args '--mod', "${modId}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'), '--existing-mod', "manascore"
 
             mods {
-                tensura_iaf {
+                tensura_iron_spell {
                     source sourceSets.main
                 }
             }
@@ -93,7 +93,7 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', "${modId}"
 
             mods {
-                tensura_iaf {
+                tensura_iron_spell {
                     source sourceSets.main
                     source sourceSets.test
                 }
@@ -110,6 +110,30 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {
     mavenCentral()
     maven { url = 'https://maven.minecraftforge.net' }
+    maven {
+        url = 'https://nexus.nighti.dev/repository/manasmods/'
+        credentials {
+            username System.getenv().getOrDefault("MANAS_REPO_USER", nexusUsername)
+            password System.getenv().getOrDefault("MANAS_REPO_USER_PASSWORD", nexusPassword)
+        }
+    }
+
+    maven {
+        name = "Iron's Maven - Release"
+        url = "https://code.redspace.io/releases"
+    }
+
+    maven {
+        name = "Iron's Maven - Snapshots"
+        url = "https://code.redspace.io/snapshots"
+    }
+
+    maven { url = "https://maven.enginehub.org/repo/" }
+    maven { url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
+    maven { url = "https://maven.theillusivec4.top" }
+    maven { url = "https://cursemaven.com" }
+    maven { url = "https://maven.blamejared.com" }
+    maven { url = "https://maven.kosmx.dev/" }
 
     maven {
         // location of the maven that hosts JEI files since January 2023
@@ -147,16 +171,36 @@ repositories {
 dependencies {
     //Minecraft Forge
     minecraft "net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}"
-    //Lombok
+
+    implementation("com.github.manasmods:TensuraMod:1.19.2-1.0.0.0")
+    //TerraBlender is used to generate our Biomes
+    implementation fg.deobf("com.github.glitchfiend:TerraBlender-forge:${minecraftVersion}-${terraBlenderVersion}")
+    //jarJar(group: 'com.github.glitchfiend', name: 'TerraBlender-forge', version: "[${minecraftVersion}-${terraBlenderVersion.substring(0, terraBlenderVersion.indexOf('.') + 1)},${minecraftVersion}-${getNextMajorMinecraftVersion(terraBlenderVersion)})")
+
+    // ManasCore and Dependencies
+    implementation fg.deobf("com.github.manasmods:ManasCore:${minecraftVersion}-${manasCoreVersion}:slim")
+    implementation fg.deobf("com.lowdragmc.photon:photon-forge-${minecraftVersion}:${photonVersion}") {
+        transitive = false
+    }
+    implementation fg.deobf("com.lowdragmc.ldlib:ldlib-forge-${minecraftVersion}:${ldlibVersion}") {
+        transitive = false
+    }
+    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${mixinExtrasVersion}"))
+    implementation("io.github.llamalad7:mixinextras-forge:${mixinExtrasVersion}")
+
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    //ManasCore
-    implementation fg.deobf("com.github.manasmods:ManasCore:${minecraftVersion}-${manasCoreVersion}")
-    //Ice and Fire
+
+    //Iron Spell
     implementation fileTree("lib")
-    implementation "curse.maven:ice-and-fire-dragons-264231:5122072"
-    implementation "curse.maven:citadel-331936:4556677"
+    compileOnly fg.deobf("io.redspace.ironsspellbooks:irons_spellbooks:${ironsSpellsVersion}:api")
+    runtimeOnly fg.deobf("io.redspace.ironsspellbooks:irons_spellbooks:${ironsSpellsVersion}")
+    runtimeOnly fg.deobf("software.bernie.geckolib:geckolib-forge-${geckolib_version}")
+    runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:${caelus_version}")
+    runtimeOnly fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+    implementation "com.google.code.gson:gson:${gson_version}"
 }
 
 reobf {
@@ -166,12 +210,12 @@ reobf {
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "tensura_iaf",
-                "Specification-Vendor"    : "tensura_iafsareus",
+                "Specification-Title"     : "tensura_iron_spell",
+                "Specification-Vendor"    : "tensura_iron_spellsareus",
                 "Specification-Version"   : "1",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "tensura_iafsareus",
+                "Implementation-Vendor"   : "tensura_iron_spellsareus",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
