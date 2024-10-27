@@ -1,0 +1,7 @@
+{
+  "entity": "irons_spellbooks:summoned_frog",
+  "evolution": "tensura:none",
+  "maxEP": 100,
+  "minEP": 10,
+  "skills": []
+}

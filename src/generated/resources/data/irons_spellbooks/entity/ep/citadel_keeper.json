@@ -1,0 +1,9 @@
+{
+  "entity": "irons_spellbooks:citadel_keeper",
+  "evolution": "tensura:none",
+  "maxEP": 20000,
+  "minEP": 10000,
+  "skills": [
+    "tensura:steel_strength"
+  ]
+}

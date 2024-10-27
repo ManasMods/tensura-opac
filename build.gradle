@@ -48,6 +48,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
             property 'forge.logging.mojang.level', 'debug'
             property 'mixin.debug.export', 'true'
+            arg "-mixin.config=tensura_iron_spell.mixins.json"
 
             mods {
                 tensura_iron_spell {
@@ -61,6 +62,7 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'mixin.debug.export', 'true'
+            arg "-mixin.config=tensura_iron_spell.mixins.json"
 
             arg "nogui"
             mods {
@@ -91,6 +93,7 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'forge.enabledGameTestNamespaces', "${modId}"
+            arg "-mixin.config=tensura_iron_spell.mixins.json"
 
             mods {
                 tensura_iron_spell {
@@ -172,7 +175,7 @@ dependencies {
     //Minecraft Forge
     minecraft "net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}"
 
-    implementation("com.github.manasmods:TensuraMod:1.19.2-1.0.0.0")
+    implementation fg.deobf("com.github.manasmods:TensuraMod:1.19.2-1.0.0.0")
     //TerraBlender is used to generate our Biomes
     implementation fg.deobf("com.github.glitchfiend:TerraBlender-forge:${minecraftVersion}-${terraBlenderVersion}")
     //jarJar(group: 'com.github.glitchfiend', name: 'TerraBlender-forge', version: "[${minecraftVersion}-${terraBlenderVersion.substring(0, terraBlenderVersion.indexOf('.') + 1)},${minecraftVersion}-${getNextMajorMinecraftVersion(terraBlenderVersion)})")
@@ -194,13 +197,17 @@ dependencies {
 
     //Iron Spell
     implementation fileTree("lib")
-    compileOnly fg.deobf("io.redspace.ironsspellbooks:irons_spellbooks:${ironsSpellsVersion}:api")
-    runtimeOnly fg.deobf("io.redspace.ironsspellbooks:irons_spellbooks:${ironsSpellsVersion}")
+    implementation fg.deobf("io.redspace.ironsspellbooks:irons_spellbooks:${ironsSpellsVersion}")
     runtimeOnly fg.deobf("software.bernie.geckolib:geckolib-forge-${geckolib_version}")
     runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:${caelus_version}")
     runtimeOnly fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     implementation "com.google.code.gson:gson:${gson_version}"
+}
+
+mixin {
+    add sourceSets.main, "tensura_iron_spell.refmap.json"
+    config "tensura_iron_spell.mixins.json"
 }
 
 reobf {
@@ -216,7 +223,8 @@ jar {
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "tensura_iron_spellsareus",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs"            : "tensura_iron_spell.mixins.json"
         ])
     }
 }

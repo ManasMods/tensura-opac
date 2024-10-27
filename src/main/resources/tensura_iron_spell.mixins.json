@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "com.github.manasmods.tensura_iron_spell.core",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "tensura_iron_spell.refmap.json",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "MixinAbstractSpell",
+    "MixinCastingItem",
+    "MixinManaBarOverlay"
+  ],
+  "minVersion": "0.8",
+  "client": [
+  ]
+}

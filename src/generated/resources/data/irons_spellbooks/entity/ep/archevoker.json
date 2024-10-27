@@ -1,0 +1,7 @@
+{
+  "entity": "irons_spellbooks:archevoker",
+  "evolution": "tensura:none",
+  "maxEP": 12000,
+  "minEP": 10000,
+  "skills": []
+}

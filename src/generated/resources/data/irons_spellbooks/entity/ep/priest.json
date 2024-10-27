@@ -1,0 +1,10 @@
+{
+  "entity": "irons_spellbooks:priest",
+  "evolution": "tensura:none",
+  "maxEP": 12000,
+  "minEP": 8000,
+  "skills": [
+    "tensura:light_attack_resistance",
+    "tensura:light"
+  ]
+}

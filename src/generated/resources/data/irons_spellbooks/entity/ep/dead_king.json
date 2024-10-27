@@ -1,0 +1,16 @@
+{
+  "entity": "irons_spellbooks:dead_king",
+  "evolution": "tensura:none",
+  "maxEP": 100000,
+  "minEP": 50000,
+  "skills": [
+    "tensura:darkness_attack_resistance",
+    "tensura:darkness",
+    "tensura:true_darkness",
+    "tensura:poison_resistance",
+    "tensura:abnormal_condition_resistance",
+    "tensura:magic_sense",
+    "tensura:sage",
+    "tensura:blood_mist"
+  ]
+}
