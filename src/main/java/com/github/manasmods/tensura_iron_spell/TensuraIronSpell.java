@@ -1,6 +1,8 @@
 package com.github.manasmods.tensura_iron_spell;
 
-import com.github.manasmods.tensura_iron_spell.data.IronSpellEntityEPProvider;
+import com.github.manasmods.tensura_iron_spell.data.gen.IronSpellEntityEPProvider;
+import com.github.manasmods.tensura_iron_spell.data.gen.IronSpellEntityTypeTagProvider;
+import com.github.manasmods.tensura_iron_spell.data.gen.IronSpellGlobalLootModifiersProvider;
 import lombok.Getter;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -30,6 +32,8 @@ public class TensuraIronSpell {
 
     private void generateData(final GatherDataEvent event) {
         event.getGenerator().addProvider(event.includeServer(), new IronSpellEntityEPProvider(event));
+        event.getGenerator().addProvider(event.includeServer(), new IronSpellEntityTypeTagProvider(event));
+        event.getGenerator().addProvider(event.includeServer(), new IronSpellGlobalLootModifiersProvider(event));
     }
 
     private String getConfigFileName(String name) {

@@ -1,4 +1,4 @@
-package com.github.manasmods.tensura_iron_spell.data;
+package com.github.manasmods.tensura_iron_spell.data.gen;
 
 import com.github.manasmods.manascore.api.data.gen.CustomDataProvider;
 import com.github.manasmods.tensura.data.pack.EntityEPCount;
@@ -49,15 +49,16 @@ public class IronSpellEntityEPProvider extends CustomDataProvider {
         EntityEPCount.of(EntityType.getKey(EntityRegistry.CULTIST.get()), 10000, 13000, cultistList).buildJson(biConsumer);
 
         List<ResourceLocation> deadKingList = new ArrayList<>();
-        deadKingList.add(ResistanceSkills.DARKNESS_ATTACK_RESISTANCE.getId());
         deadKingList.add(SpiritualMagics.DARKNESS.getId());
         deadKingList.add(SpiritualMagics.TRUE_DARKNESS.getId());
         deadKingList.add(ResistanceSkills.POISON_RESISTANCE.getId());
+        deadKingList.add(ResistanceSkills.DARKNESS_ATTACK_RESISTANCE.getId());
         deadKingList.add(ResistanceSkills.ABNORMAL_CONDITION_RESISTANCE.getId());
+        deadKingList.add(ResistanceSkills.PHYSICAL_ATTACK_RESISTANCE.getId());
         deadKingList.add(ExtraSkills.MAGIC_SENSE.getId());
         deadKingList.add(ExtraSkills.SAGE.getId());
         deadKingList.add(IntrinsicSkills.BLOOD_MIST.getId());
-        EntityEPCount.of(EntityType.getKey(EntityRegistry.DEAD_KING.get()), 50000, 100000, deadKingList).buildJson(biConsumer);
+        EntityEPCount.of(EntityType.getKey(EntityRegistry.DEAD_KING.get()), 80000, 160000, deadKingList).buildJson(biConsumer);
         EntityEPCount.of(EntityType.getKey(EntityRegistry.MAGEHUNTER_VINDICATOR.get()), 5000, 6000).buildJson(biConsumer);
 
         List<ResourceLocation> nercomancerList = new ArrayList<>();

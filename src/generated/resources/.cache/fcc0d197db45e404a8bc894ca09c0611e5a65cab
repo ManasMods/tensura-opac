@@ -1,0 +1,15 @@
+// 1.19.2	2024-10-28T02:08:55.3370601	Tags for minecraft:entity_type
+6f756877f94bab6d812414f86167760b59400f97 data/forge/tags/entity_types/boss_for_hero.json
+d93f6253b74960385cb70e74ce4dbc120d32197a data/forge/tags/entity_types/can_die_in_labyrinth.json
+a8db77ff1654d1b186779c057bdb89fd6ac2bfe4 data/forge/tags/entity_types/can_distinguish.json
+70bd7f8f6bf467b3f0c23fa0403f8c9add06005c data/forge/tags/entity_types/can_evaporate.json
+6174bb7e4d27bbf21cc02775044032a92f6be2de data/forge/tags/entity_types/cold_source.json
+ee57194d1f2a5b2789716ce7da7b9fdbb1ce73da data/forge/tags/entity_types/drop_crystal.json
+6f756877f94bab6d812414f86167760b59400f97 data/forge/tags/entity_types/full_gravity_control.json
+d713c38df72dcd1deb72b065a29e194069aa8352 data/forge/tags/entity_types/human.json
+606d6009cc038ad8af769066caa05295ff7741c1 data/forge/tags/entity_types/no_charisma.json
+ad69e088a69eff89e1066d1c7b6f65c747fc1d4f data/forge/tags/entity_types/no_fear.json
+6f756877f94bab6d812414f86167760b59400f97 data/forge/tags/entity_types/no_mind_control.json
+6f756877f94bab6d812414f86167760b59400f97 data/forge/tags/entity_types/no_possession.json
+6f515f7e3521c007a7eebcdfb684dfaeb41e541e data/forge/tags/entity_types/spiritual.json
+ad69e088a69eff89e1066d1c7b6f65c747fc1d4f data/forge/tags/entity_types/undead.json

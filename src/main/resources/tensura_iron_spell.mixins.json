@@ -7,9 +7,15 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "MixinAbnormalConditionNullification",
     "MixinAbstractSpell",
     "MixinCastingItem",
-    "MixinManaBarOverlay"
+    "MixinColdNullification",
+    "MixinColdResistance",
+    "MixinManaBarOverlay",
+    "MixinTensuraDamageSourceHelper",
+    "MixinThermalFluctationNullification",
+    "MixinThermalFluctationResistance"
   ],
   "minVersion": "0.8",
   "client": [
