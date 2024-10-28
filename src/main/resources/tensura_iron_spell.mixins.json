@@ -9,7 +9,6 @@
   "mixins": [
     "MixinAbnormalConditionNullification",
     "MixinAbstractSpell",
-    "MixinCastingItem",
     "MixinColdNullification",
     "MixinColdResistance",
     "MixinManaBarOverlay",
