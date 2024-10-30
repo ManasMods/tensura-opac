@@ -7,8 +7,6 @@
 [![DownloadCount](https://cf.way2muchnoise.eu/full_643695_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/tensura-mod-that-time-i-got-reincarnated-as-a-slime)
 [![Discord](https://img.shields.io/discord/831767201966456852.svg?color=7289DA&label=discord&logo=discord&logoColor=FFFFFF)](https://discord.gg/D9TkjYPpcg)
 
-**About**
-
 This Mod doesn't provide any new functionality for Minecraft itself. It requires TenSura: Reincarnated and Iron's Spells & Spellbooks to work.
 
 # Features
