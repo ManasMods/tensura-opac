@@ -1,4 +1,4 @@
-# TenSura: Reincarnated
+# TenSura Compat: Iron's Spells & Spellbooks
 
 [![CI](https://github.com/ManasMods/reincarnated_mod/workflows/CI/badge.svg)](https://github.com/ManasMods/reincarnated_mod/actions/workflows/gradle_ci.yml)
 ![GitHub](https://img.shields.io/github/last-commit/thereapr/reincarnated_mod?logo=git&logoColor=FFFFFF)
@@ -9,7 +9,7 @@
 
 **About**
 
-TenSura: Reincarnated is a mod about bringing the popular Japanese media 'That Time I Got Reincarnated as a Slime' into the world of Minecraft! Adding and Reworking so many systems that it may as well be a Modpack!
+This Mod doesn't provide any new functionality for Minecraft itself. It requires TenSura: Reincarnated and Iron's Spells & Spellbooks to work.
 
 # Features
 - Default EP and Abilities (Skills/Magics/Battlewills) for Iron's Spell & Spellbooks mobs.
