@@ -13,4 +13,5 @@ This Mod doesn't provide any new functionality for Minecraft itself. It requires
 - Default EP and Abilities (Skills/Magics/Battlewills) for Iron's Spell & Spellbooks mobs.
 - Making Iron's Spell & Spellbooks magic consume Tensura's Magicule instead of their mana (Configureable).
 - Making Iron's Spell & Spellbooks magic do more damage to fit in with TR's high-damage abilities (Configureable).
+- Iron's Spell & Spellbooks's Mana regen multiplier is applied for TR's magicule regen.
 - Death King drops Demon Essence.
