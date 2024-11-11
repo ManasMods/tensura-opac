@@ -3,28 +3,28 @@ loaderVersion = "${forgeLoaderVersion}"
 license = "All Rights Reserved"
 
 [[mods]]
-modId = "tensura_iron_spell"
+modId = "tensura_opac"
 version = "${modVersion}"
-displayName = "Tensura Compat: Iron's Spells n Spellbooks"
+displayName = "Tensura Compat: Open Parties and Claims"
 
 authors = "MinhEragon"
 description = '''
-A Compat mod between Tensura:Reincarnated & Iron's Spells n Spellbooks.
+A Compat mod between Tensura:Reincarnated & Open Parties and Claims.
 '''
 
-[[dependencies.tensura_iron_spell]]
+[[dependencies.tensura_opac]]
     modId = "forge"
     mandatory = true
     versionRange = "${forgeLoaderVersion}"
     ordering = "NONE"
     side = "BOTH"
-[[dependencies.tensura_iron_spell]]
+[[dependencies.tensura_opac]]
     modId = "minecraft"
     mandatory = true
     versionRange = "${minecraftVersionCheck}"
     ordering = "NONE"
     side = "BOTH"
-[[dependencies.tensura_iron_spell]]
+[[dependencies.tensura_opac]]
     modId="manascore"
     mandatory=true
     versionRange="${manasVersionCheck}"

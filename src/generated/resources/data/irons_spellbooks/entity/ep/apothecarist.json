@@ -1,9 +1,0 @@
-{
-  "entity": "irons_spellbooks:apothecarist",
-  "evolution": "tensura:none",
-  "maxEP": 12000,
-  "minEP": 10000,
-  "skills": [
-    "tensura:poison_resistance"
-  ]
-}

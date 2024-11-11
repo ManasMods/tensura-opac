@@ -48,10 +48,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
             property 'forge.logging.mojang.level', 'debug'
             property 'mixin.debug.export', 'true'
-            arg "-mixin.config=tensura_iron_spell.mixins.json"
+            arg "-mixin.config=tensura_opac.mixins.json"
 
             mods {
-                tensura_iron_spell {
+                tensura_opac {
                     source sourceSets.main
                 }
             }
@@ -62,11 +62,11 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'mixin.debug.export', 'true'
-            arg "-mixin.config=tensura_iron_spell.mixins.json"
+            arg "-mixin.config=tensura_opac.mixins.json"
 
             arg "nogui"
             mods {
-                tensura_iron_spell {
+                tensura_opac {
                     source sourceSets.main
                 }
             }
@@ -82,7 +82,7 @@ minecraft {
             args '--mod', "${modId}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'), '--existing-mod', "manascore"
 
             mods {
-                tensura_iron_spell {
+                tensura_opac {
                     source sourceSets.main
                 }
             }
@@ -93,10 +93,10 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'forge.enabledGameTestNamespaces', "${modId}"
-            arg "-mixin.config=tensura_iron_spell.mixins.json"
+            arg "-mixin.config=tensura_opac.mixins.json"
 
             mods {
-                tensura_iron_spell {
+                tensura_opac {
                     source sourceSets.main
                     source sourceSets.test
                 }
@@ -121,22 +121,10 @@ repositories {
         }
     }
 
-    maven {
-        name = "Iron's Maven - Release"
-        url = "https://code.redspace.io/releases"
-    }
-
-    maven {
-        name = "Iron's Maven - Snapshots"
-        url = "https://code.redspace.io/snapshots"
-    }
-
     maven { url = "https://maven.enginehub.org/repo/" }
     maven { url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
-    maven { url = "https://maven.theillusivec4.top" }
     maven { url = "https://cursemaven.com" }
     maven { url = "https://maven.blamejared.com" }
-    maven { url = "https://maven.kosmx.dev/" }
 
     maven {
         // location of the maven that hosts JEI files since January 2023
@@ -166,6 +154,10 @@ repositories {
 
     maven { url "https://maven.firstdarkdev.xyz/snapshots" }
 
+    maven {
+        url = "https://api.modrinth.com/maven"
+    }
+
     flatDir {
         dirs 'lib'
     }
@@ -175,7 +167,6 @@ dependencies {
     //Minecraft Forge
     minecraft "net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}"
 
-    implementation fg.deobf("com.github.manasmods:TensuraMod:1.19.2-1.0.0.0")
     //TerraBlender is used to generate our Biomes
     implementation fg.deobf("com.github.glitchfiend:TerraBlender-forge:${minecraftVersion}-${terraBlenderVersion}")
     //jarJar(group: 'com.github.glitchfiend', name: 'TerraBlender-forge', version: "[${minecraftVersion}-${terraBlenderVersion.substring(0, terraBlenderVersion.indexOf('.') + 1)},${minecraftVersion}-${getNextMajorMinecraftVersion(terraBlenderVersion)})")
@@ -188,6 +179,8 @@ dependencies {
     implementation fg.deobf("com.lowdragmc.ldlib:ldlib-forge-${minecraftVersion}:${ldlibVersion}") {
         transitive = false
     }
+    runtimeOnly fg.deobf("software.bernie.geckolib:geckolib-forge-${geckolib_version}")
+
     implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${mixinExtrasVersion}"))
     implementation("io.github.llamalad7:mixinextras-forge:${mixinExtrasVersion}")
 
@@ -195,19 +188,14 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    //Iron Spell
-    implementation fileTree("lib")
-    implementation fg.deobf("io.redspace.ironsspellbooks:irons_spellbooks:${ironsSpellsVersion}")
-    runtimeOnly fg.deobf("software.bernie.geckolib:geckolib-forge-${geckolib_version}")
-    runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:${caelus_version}")
-    runtimeOnly fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
-    implementation "com.google.code.gson:gson:${gson_version}"
+    //Main
+    implementation fg.deobf("com.github.manasmods:TensuraMod:${minecraftVersion}-${tensuraVersion}")
+    implementation fg.deobf("maven.modrinth:open-parties-and-claims:forge-1.19.2-0.23.2")
 }
 
 mixin {
-    add sourceSets.main, "tensura_iron_spell.refmap.json"
-    config "tensura_iron_spell.mixins.json"
+    add sourceSets.main, "tensura_opac.refmap.json"
+    config "tensura_opac.mixins.json"
 }
 
 reobf {
@@ -217,14 +205,14 @@ reobf {
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "tensura_iron_spell",
-                "Specification-Vendor"    : "tensura_iron_spellsareus",
+                "Specification-Title"     : "tensura_opac",
+                "Specification-Vendor"    : "tensura_opacsareus",
                 "Specification-Version"   : "1",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "tensura_iron_spellsareus",
+                "Implementation-Vendor"   : "tensura_opacsareus",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs"            : "tensura_iron_spell.mixins.json"
+                "MixinConfigs"            : "tensura_opac.mixins.json"
         ])
     }
 }
