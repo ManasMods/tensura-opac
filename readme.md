@@ -10,5 +10,5 @@
 This Mod doesn't provide any new functionality for Minecraft itself. It requires TenSura: Reincarnated and Open parties and claims to work.
 
 # Features
-- TR skills/magics/battelwills won't break blocks inside claimed chunk.
+- TR skills/magics/battelwills won't break/place/change blocks inside claimed chunk.
 - TR skills/magics/battelwills won't damage players and entities when either the attacker or the target is inside a claimed chunk.
