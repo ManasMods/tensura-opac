@@ -28,7 +28,7 @@ import xaero.pac.common.server.parties.party.IServerParty;
 import xaero.pac.common.server.world.ServerLevelHelper;
 
 @Mod.EventBusSubscriber(modid = TensuraOpac.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class SpellHandler {
+public class OpacHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onSkillGrief(final SkillGriefEvent event) {
         if (!(event.getSkillCaster() instanceof LivingEntity entity)) return;
