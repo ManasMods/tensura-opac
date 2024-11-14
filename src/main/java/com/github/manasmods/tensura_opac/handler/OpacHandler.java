@@ -31,7 +31,7 @@ import xaero.pac.common.server.world.ServerLevelHelper;
 public class OpacHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onSkillGrief(final SkillGriefEvent event) {
-        if (!(event.getSkillCaster() instanceof LivingEntity entity)) return;
+        if (event.getSkillCaster() == null) return;
         ServerLevel serverLevel = ServerLevelHelper.getServerLevel(event.getSkillCaster().getLevel());
         if (serverLevel == null) return;
 
@@ -39,7 +39,7 @@ public class OpacHandler {
         IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
                 IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(serverLevel.getServer());
         if (serverData.getChunkProtection().onEntityDestroyBlock(serverData,
-                serverLevel.getBlockState(pos), entity, serverLevel, pos, false)) event.setCanceled(true);
+                serverLevel.getBlockState(pos), event.getSkillCaster(), serverLevel, pos, false)) event.setCanceled(true);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
