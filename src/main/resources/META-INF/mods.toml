@@ -25,8 +25,8 @@ A Compat mod between Tensura:Reincarnated & Open Parties and Claims.
     ordering = "NONE"
     side = "BOTH"
 [[dependencies.tensura_opac]]
-    modId="manascore"
+    modId="openpartiesandclaims"
     mandatory=true
-    versionRange="${manasVersionCheck}"
+    versionRange="${opacVersionCheck}"
     ordering="NONE"
     side="BOTH"

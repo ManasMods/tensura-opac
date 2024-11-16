@@ -190,7 +190,7 @@ dependencies {
 
     //Main
     implementation fg.deobf("com.github.manasmods:TensuraMod:${minecraftVersion}-${tensuraVersion}")
-    implementation fg.deobf("maven.modrinth:open-parties-and-claims:forge-1.19.2-0.23.2")
+    implementation fg.deobf("maven.modrinth:open-parties-and-claims:forge-1.19.2-${opacVersion}")
 }
 
 mixin {
@@ -244,13 +244,13 @@ def replaceResources = tasks.register("replaceResources", Copy) {
         def forgeLoaderVersion = forgeVersion.substring(0, forgeVersion.indexOf('.'))
         def nextMajorMinecraftVersion = getNextMajorMinecraftVersion(minecraftVersion)
         def minecraftVersionCheck = "[${minecraftVersion},${nextMajorMinecraftVersion})"
-        def manasVersionCheck = "[${manasCoreVersion},)"
+        def opacVersionCheck = "[${opacVersion},)"
 
         include "META-INF/mods.toml"
         expand 'modVersion': "${modVersion}",
                 'forgeLoaderVersion': "[${forgeLoaderVersion},)",
                 'minecraftVersionCheck': "${minecraftVersionCheck}",
-                'manasVersionCheck': "${manasVersionCheck}"
+                'opacVersionCheck': "${opacVersionCheck}"
     }
     it.into "$buildDir/resources/main/"
 }
