@@ -7,7 +7,7 @@
     "defaultRequire": 1
   },
   "mixins": [
-
+    "MixinServerPlayerClaimInfoManager"
   ],
   "minVersion": "0.8",
   "client": [

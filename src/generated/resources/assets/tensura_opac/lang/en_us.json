@@ -1,0 +1,6 @@
+{
+  "opac.bonus_claim.get": "%s's Bonus Claim Chunk is currently %s.",
+  "opac.bonus_claim.set": "%s's Bonus Claim Chunk has been set to %s.",
+  "opac.bonus_force.get": "%s's Bonus Forceload Chunk is currently %s.",
+  "opac.bonus_force.set": "%s's Bonus Forceload Chunk has been set to %s."
+}
