@@ -6,11 +6,14 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.Collection;
 
 @Mod.EventBusSubscriber(modid = TensuraOpac.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class OpacCommand {
@@ -19,102 +22,120 @@ public class OpacCommand {
         e.getDispatcher().register(
                 Commands.literal("opac-perm")
                         .requires((stack) -> stack.hasPermission(3))
-                        .then(Commands.literal("bonusClaim")
-                                .then(Commands.literal("get")
-                                        .executes((context) -> getBonusClaim(context.getSource(), context.getSource().getPlayerOrException())))
-                                .then(Commands.literal("set")
-                                        .then(Commands.argument("number", IntegerArgumentType.integer())
-                                                .executes((context) -> setBonusClaim(context.getSource(),
-                                                        context.getSource().getPlayerOrException(), IntegerArgumentType.getInteger(context, "number"))))
+                        .then(Commands.argument("players", EntityArgument.players())
+                                .then(Commands.literal("bonusClaim")
+                                        .then(Commands.literal("get")
+                                                .executes((context) -> getBonusClaim(context.getSource(), EntityArgument.getPlayers(context, "players"))))
+                                        .then(Commands.literal("set")
+                                                .then(Commands.argument("number", IntegerArgumentType.integer())
+                                                        .executes((context) -> setBonusClaim(context.getSource(),
+                                                                EntityArgument.getPlayers(context, "players"), IntegerArgumentType.getInteger(context, "number"))))
+                                        )
+                                        .then(Commands.literal("add")
+                                                .then(Commands.argument("number", IntegerArgumentType.integer())
+                                                        .executes((context) -> addBonusClaim(context.getSource(),
+                                                                EntityArgument.getPlayers(context, "players"), IntegerArgumentType.getInteger(context, "number"))))
+                                        )
+                                        .then(Commands.literal("remove")
+                                                .then(Commands.argument("number", IntegerArgumentType.integer())
+                                                        .executes((context) -> removeBonusClaim(context.getSource(),
+                                                                EntityArgument.getPlayers(context, "players"), IntegerArgumentType.getInteger(context, "number"))))
+                                        )
                                 )
-                                .then(Commands.literal("add")
-                                        .then(Commands.argument("number", IntegerArgumentType.integer())
-                                                .executes((context) -> addBonusClaim(context.getSource(),
-                                                        context.getSource().getPlayerOrException(), IntegerArgumentType.getInteger(context, "number"))))
-                                )
-                                .then(Commands.literal("remove")
-                                        .then(Commands.argument("number", IntegerArgumentType.integer())
-                                                .executes((context) -> removeBonusClaim(context.getSource(),
-                                                        context.getSource().getPlayerOrException(), IntegerArgumentType.getInteger(context, "number"))))
-                                )
-                        )
-                        .then(Commands.literal("bonusForce")
-                                .then(Commands.literal("get")
-                                        .executes((context) -> getBonusForce(context.getSource(), context.getSource().getPlayerOrException())))
-                                .then(Commands.literal("set")
-                                        .then(Commands.argument("number", IntegerArgumentType.integer())
-                                                .executes((context) -> setBonusForceClaim(context.getSource(),
-                                                        context.getSource().getPlayerOrException(), IntegerArgumentType.getInteger(context, "number"))))
-                                )
-                                .then(Commands.literal("add")
-                                        .then(Commands.argument("number", IntegerArgumentType.integer())
-                                                .executes((context) -> addBonusForceClaim(context.getSource(),
-                                                        context.getSource().getPlayerOrException(), IntegerArgumentType.getInteger(context, "number"))))
-                                )
-                                .then(Commands.literal("remove")
-                                        .then(Commands.argument("number", IntegerArgumentType.integer())
-                                                .executes((context) -> removeBonusForceClaim(context.getSource(),
-                                                        context.getSource().getPlayerOrException(), IntegerArgumentType.getInteger(context, "number"))))
+                                .then(Commands.literal("bonusForce")
+                                        .then(Commands.literal("get")
+                                                .executes((context) -> getBonusForce(context.getSource(), EntityArgument.getPlayers(context, "players"))))
+                                        .then(Commands.literal("set")
+                                                .then(Commands.argument("number", IntegerArgumentType.integer())
+                                                        .executes((context) -> setBonusForceClaim(context.getSource(),
+                                                                EntityArgument.getPlayers(context, "players"), IntegerArgumentType.getInteger(context, "number"))))
+                                        )
+                                        .then(Commands.literal("add")
+                                                .then(Commands.argument("number", IntegerArgumentType.integer())
+                                                        .executes((context) -> addBonusForceClaim(context.getSource(),
+                                                                EntityArgument.getPlayers(context, "players"), IntegerArgumentType.getInteger(context, "number"))))
+                                        )
+                                        .then(Commands.literal("remove")
+                                                .then(Commands.argument("number", IntegerArgumentType.integer())
+                                                        .executes((context) -> removeBonusForceClaim(context.getSource(),
+                                                                EntityArgument.getPlayers(context, "players"), IntegerArgumentType.getInteger(context, "number"))))
+                                        )
                                 )
                         )
         );
     }
 
-    private static int getBonusClaim(CommandSourceStack stack, Player player) {
-        stack.sendSuccess(Component.translatable("opac.bonus_claim.get", player.getName(), OpacCapability.getBonusClaimChunk(player)), false);
+    private static int getBonusClaim(CommandSourceStack stack, Collection<? extends ServerPlayer> pTargets) {
+        for (ServerPlayer player : pTargets) {
+            stack.sendSuccess(Component.translatable("opac.bonus_claim.get", player.getName(), OpacCapability.getBonusClaimChunk(player)), false);
+        }
         return Command.SINGLE_SUCCESS;
     }
     
-    private static int setBonusClaim(CommandSourceStack stack, Player player, int number) {
-        OpacCapability.setBonusClaimChunk(player, number);
-        stack.sendSuccess(Component.translatable("opac.bonus_claim.set", player.getName(), number), true);
+    private static int setBonusClaim(CommandSourceStack stack, Collection<? extends ServerPlayer> pTargets, int number) {
+        for (ServerPlayer player : pTargets) {
+            OpacCapability.setBonusClaimChunk(player, number);
+            stack.sendSuccess(Component.translatable("opac.bonus_claim.set", player.getName(), number), true);
+        }
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int addBonusClaim(CommandSourceStack stack, Player player, int number) {
-        OpacCapability.getFrom(player).ifPresent(cap -> {
-            cap.setBonusClaimChunk(cap.getBonusClaimChunk() + number);
-            stack.sendSuccess(Component.translatable("opac.bonus_claim.set", player.getName(), cap.getBonusClaimChunk()), true);
-            OpacCapability.sync(player);
-        });
+    private static int addBonusClaim(CommandSourceStack stack, Collection<? extends ServerPlayer> pTargets, int number) {
+        for (ServerPlayer player : pTargets) {
+            OpacCapability.getFrom(player).ifPresent(cap -> {
+                cap.setBonusClaimChunk(cap.getBonusClaimChunk() + number);
+                stack.sendSuccess(Component.translatable("opac.bonus_claim.set", player.getName(), cap.getBonusClaimChunk()), true);
+                OpacCapability.sync(player);
+            });
+        }
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int removeBonusClaim(CommandSourceStack stack, Player player, int number) {
-        OpacCapability.getFrom(player).ifPresent(cap -> {
-            cap.setBonusClaimChunk(Math.max(0, cap.getBonusClaimChunk() - number));
-            stack.sendSuccess(Component.translatable("opac.bonus_claim.set", player.getName(), cap.getBonusClaimChunk()), true);
-            OpacCapability.sync(player);
-        });
+    private static int removeBonusClaim(CommandSourceStack stack, Collection<? extends ServerPlayer> pTargets, int number) {
+        for (ServerPlayer player : pTargets) {
+            OpacCapability.getFrom(player).ifPresent(cap -> {
+                cap.setBonusClaimChunk(Math.max(0, cap.getBonusClaimChunk() - number));
+                stack.sendSuccess(Component.translatable("opac.bonus_claim.set", player.getName(), cap.getBonusClaimChunk()), true);
+                OpacCapability.sync(player);
+            });
+        }
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int getBonusForce(CommandSourceStack stack, Player player) {
-        stack.sendSuccess(Component.translatable("opac.bonus_force.get", player.getName(), OpacCapability.getBonusForceChunk(player)), false);
+    private static int getBonusForce(CommandSourceStack stack, Collection<? extends ServerPlayer> pTargets) {
+        for (ServerPlayer player : pTargets) {
+            stack.sendSuccess(Component.translatable("opac.bonus_force.get", player.getName(), OpacCapability.getBonusForceChunk(player)), false);
+        }
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int setBonusForceClaim(CommandSourceStack stack, Player player, int number) {
-        OpacCapability.setBonusForceChunk(player, number);
-        stack.sendSuccess(Component.translatable("opac.bonus_force.set", player.getName(), number), true);
+    private static int setBonusForceClaim(CommandSourceStack stack, Collection<? extends ServerPlayer> pTargets, int number) {
+        for (ServerPlayer player : pTargets) {
+            OpacCapability.setBonusForceChunk(player, number);
+            stack.sendSuccess(Component.translatable("opac.bonus_force.set", player.getName(), number), true);
+        }
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int addBonusForceClaim(CommandSourceStack stack, Player player, int number) {
-        OpacCapability.getFrom(player).ifPresent(cap -> {
-            cap.setBonusForceChunk(cap.getBonusForceChunk() + number);
-            stack.sendSuccess(Component.translatable("opac.bonus_force.set", player.getName(), cap.getBonusForceChunk()), true);
-            OpacCapability.sync(player);
-        });
+    private static int addBonusForceClaim(CommandSourceStack stack, Collection<? extends ServerPlayer> pTargets, int number) {
+        for (ServerPlayer player : pTargets) {
+            OpacCapability.getFrom(player).ifPresent(cap -> {
+                cap.setBonusForceChunk(cap.getBonusForceChunk() + number);
+                stack.sendSuccess(Component.translatable("opac.bonus_force.set", player.getName(), cap.getBonusForceChunk()), true);
+                OpacCapability.sync(player);
+            });
+        }
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int removeBonusForceClaim(CommandSourceStack stack, Player player, int number) {
-        OpacCapability.getFrom(player).ifPresent(cap -> {
-            cap.setBonusForceChunk(Math.max(0, cap.getBonusForceChunk() - number));
-            stack.sendSuccess(Component.translatable("opac.bonus_force.set", player.getName(), cap.getBonusForceChunk()), true);
-            OpacCapability.sync(player);
-        });
+    private static int removeBonusForceClaim(CommandSourceStack stack, Collection<? extends ServerPlayer> pTargets, int number) {
+        for (ServerPlayer player : pTargets) {
+            OpacCapability.getFrom(player).ifPresent(cap -> {
+                cap.setBonusForceChunk(Math.max(0, cap.getBonusForceChunk() - number));
+                stack.sendSuccess(Component.translatable("opac.bonus_force.set", player.getName(), cap.getBonusForceChunk()), true);
+                OpacCapability.sync(player);
+            });
+        }
         return Command.SINGLE_SUCCESS;
     }
 }
