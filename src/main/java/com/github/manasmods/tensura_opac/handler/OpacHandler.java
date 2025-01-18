@@ -1,11 +1,12 @@
 package com.github.manasmods.tensura_opac.handler;
 
-import com.github.manasmods.tensura.event.SkillGriefEvent;
+import com.github.manasmods.tensura.event.*;
 import com.github.manasmods.tensura_opac.TensuraOpac;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -40,6 +41,76 @@ public class OpacHandler {
                 IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(serverLevel.getServer());
         if (serverData.getChunkProtection().onEntityDestroyBlock(serverData,
                 serverLevel.getBlockState(pos), event.getSkillCaster(), serverLevel, pos, false)) event.setCanceled(true);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onForceTeleport(final ForcedTeleportationEvent event) {
+        Entity target = event.getEntity();
+        Entity source = event.getTeleporter();
+
+        if (source != null && source != target) {
+            IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
+                    IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
+            if (serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
+                    InteractionHand.MAIN_HAND, false, source instanceof Player, false))
+                event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onEnergyDrain(final EnergyDrainEvent event) {
+        Entity target = event.getEntity();
+        Entity source = event.getAttacker();
+
+        if (source != null && source != target) {
+            IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
+                    IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
+            if (serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
+                    InteractionHand.MAIN_HAND, false, source instanceof Player, false))
+                event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onSkillPlunder(final SkillPlunderEvent event) {
+        Entity target = event.getTarget();
+        Entity source = event.getPlunderer();
+
+        if (source != null && source != target) {
+            IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
+                    IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
+            if (serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
+                    InteractionHand.MAIN_HAND, false, source instanceof Player, false))
+                event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onPossession(final PossessionEvent event) {
+        Entity target = event.getEntity();
+        Entity source = event.getAttacker();
+
+        if (source != null && source != target) {
+            IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
+                    IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
+            if (serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
+                    InteractionHand.MAIN_HAND, false, source instanceof Player, false))
+                event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onSpiritualHurt(final SpiritualHurtEvent event) {
+        Entity target = event.getEntity();
+        Entity source = event.getAttacker();
+
+        if (source != null && source != target) {
+            IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
+                    IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
+            if (serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
+                    InteractionHand.MAIN_HAND, true, source instanceof Player, false))
+                event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
