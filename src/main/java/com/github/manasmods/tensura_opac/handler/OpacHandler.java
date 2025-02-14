@@ -39,7 +39,7 @@ public class OpacHandler {
         BlockPos pos = event.getBlockPos();
         IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
                 IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(serverLevel.getServer());
-        if (serverData.getChunkProtection().onEntityDestroyBlock(serverData,
+        if (serverData != null && serverData.getChunkProtection().onEntityDestroyBlock(serverData,
                 serverLevel.getBlockState(pos), event.getSkillCaster(), serverLevel, pos, false)) event.setCanceled(true);
     }
 
@@ -48,10 +48,10 @@ public class OpacHandler {
         Entity target = event.getEntity();
         Entity source = event.getTeleporter();
 
-        if (source != null && source != target) {
+        if (source != null && source != target && target.getServer() != null) {
             IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
                     IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
-            if (serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
+            if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
                     InteractionHand.MAIN_HAND, false, source instanceof Player, false))
                 event.setCanceled(true);
         }
@@ -62,10 +62,10 @@ public class OpacHandler {
         Entity target = event.getEntity();
         Entity source = event.getAttacker();
 
-        if (source != null && source != target) {
+        if (source != null && source != target && target.getServer() != null) {
             IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
                     IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
-            if (serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
+            if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
                     InteractionHand.MAIN_HAND, false, source instanceof Player, false))
                 event.setCanceled(true);
         }
@@ -76,10 +76,10 @@ public class OpacHandler {
         Entity target = event.getTarget();
         Entity source = event.getPlunderer();
 
-        if (source != null && source != target) {
+        if (source != null && source != target && target != null && target.getServer() != null) {
             IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
                     IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
-            if (serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
+            if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
                     InteractionHand.MAIN_HAND, false, source instanceof Player, false))
                 event.setCanceled(true);
         }
@@ -90,10 +90,10 @@ public class OpacHandler {
         Entity target = event.getEntity();
         Entity source = event.getAttacker();
 
-        if (source != null && source != target) {
+        if (source != null && source != target && target.getServer() != null) {
             IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
                     IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
-            if (serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
+            if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
                     InteractionHand.MAIN_HAND, false, source instanceof Player, false))
                 event.setCanceled(true);
         }
@@ -104,10 +104,10 @@ public class OpacHandler {
         Entity target = event.getEntity();
         Entity source = event.getAttacker();
 
-        if (source != null && source != target) {
+        if (source != null && source != target && target.getServer() != null) {
             IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
                     IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
-            if (serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
+            if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null,
                     InteractionHand.MAIN_HAND, true, source instanceof Player, false))
                 event.setCanceled(true);
         }
@@ -127,6 +127,7 @@ public class OpacHandler {
 
         IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
                 IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
+        if (serverData == null) return;
         if (serverData.getChunkProtection().onEntityInteraction(serverData, source.getEntity(), source.getDirectEntity(), target, null,
                 InteractionHand.MAIN_HAND, true, source.getDirectEntity() instanceof Player, false))
             event.setCanceled(true);

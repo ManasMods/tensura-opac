@@ -27,7 +27,7 @@ import xaero.pac.common.server.parties.party.IServerParty;
 @Mixin(LivingEntity.class)
 public class MixinLivingEntity {
     @Inject(method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z", at = @At("HEAD"), cancellable = true)
-    private void isValidBlock(MobEffectInstance instance, Entity source, CallbackInfoReturnable<Boolean> cir) {
+    private void addEffect(MobEffectInstance instance, Entity source, CallbackInfoReturnable<Boolean> cir) {
         LivingEntity target = (LivingEntity) (Object) this;
         if (source == null) return;
         if (instance.getEffect().isBeneficial()) return;
