@@ -1,6 +1,7 @@
 package com.github.manasmods.tensura_opac.handler;
 
 import com.github.manasmods.tensura.event.*;
+import com.github.manasmods.tensura.util.damage.TensuraDamageSource;
 import com.github.manasmods.tensura_opac.TensuraOpac;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -122,17 +123,21 @@ public class OpacHandler {
 
         DamageSource source = event.getSource();
         if (source.getEntity() == null) return;
-        if (!source.getMsgId().contains("tensura.")) return;
-        if (source.getEntity() == target || source.getDirectEntity() == target) return;
 
-        IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
-                IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
-        if (serverData == null) return;
-        if (serverData.getChunkProtection().onEntityInteraction(serverData, source.getEntity(), source.getDirectEntity(), target, null,
-                InteractionHand.MAIN_HAND, true, source.getDirectEntity() instanceof Player, false))
-            event.setCanceled(true);
-        else if (serverData.getChunkProtection().onEntityInteraction(serverData, target, target, source.getEntity(), null,
-                InteractionHand.MAIN_HAND, true, source.getDirectEntity() instanceof Player, false))
-            event.setCanceled(true);
+        if (source.getMsgId().contains("tensura.")
+                || (source instanceof TensuraDamageSource damageSource && damageSource.getSkill() != null)) {
+            if (source.getEntity() == target || source.getDirectEntity() == target) return;
+
+            IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
+                    IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
+            if (serverData == null) return;
+
+            if (serverData.getChunkProtection().onEntityInteraction(serverData, source.getEntity(), source.getDirectEntity(), target, null,
+                    InteractionHand.MAIN_HAND, true, source.getDirectEntity() instanceof Player, false))
+                event.setCanceled(true);
+            else if (serverData.getChunkProtection().onEntityInteraction(serverData, target, target, source.getEntity(), null,
+                    InteractionHand.MAIN_HAND, true, source.getDirectEntity() instanceof Player, false))
+                event.setCanceled(true);
+        }
     }
 }
