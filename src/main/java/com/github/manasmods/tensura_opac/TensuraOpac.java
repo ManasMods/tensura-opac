@@ -1,6 +1,7 @@
 package com.github.manasmods.tensura_opac;
 
 import com.github.manasmods.tensura_opac.data.OpacLanguageProvider;
+import com.github.manasmods.tensura_opac.handler.CapabilityHandler;
 import com.github.manasmods.tensura_opac.network.OpacNetwork;
 import lombok.Getter;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -18,6 +19,7 @@ public class TensuraOpac {
 
     public TensuraOpac() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(CapabilityHandler::registerCapabilities);
         modEventBus.addListener(this::generateData);
         OpacNetwork.register();
     }
