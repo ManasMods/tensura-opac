@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "manas_template",
+  "version": "${version}",
+  "name": "ManasMods 1.21 Template",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "Me!"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/manas_template/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.manasmods.template.fabric.TemplateFabric"
+    ],
+    "client": [
+      "io.github.manasmods.template.fabric.client.TemplateFabricClient"
+    ]
+  },
+  "mixins": [
+    "manas_template.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.10",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "architectury": ">=13.0.8",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

@@ -1,0 +1,17 @@
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
+repositories {
+    maven {
+        name = "Terraformers"
+        url = "https://maven.terraformersmc.com/"
+    }
+}
+
+dependencies {
+    // QOL mods for Dev Env
+    modImplementation("com.terraformersmc:modmenu:11.0.2")
+    modImplementation("maven.modrinth:fabric-permissions-api:$fabric_permissions_api_version")
+    modImplementation("maven.modrinth:luckperms:$fabric_luckperms_version")
+}

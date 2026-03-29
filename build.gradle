@@ -1,0 +1,299 @@
+plugins {
+    id 'dev.architectury.loom' version '1.7-SNAPSHOT' apply false
+    id 'architectury-plugin' version '3.4-SNAPSHOT'
+    id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
+    id "io.freefair.lombok" version "8.10" apply false
+    id "com.github.gmazzo.buildconfig" version "5.4.0" apply false
+    id "idea"
+    id 'org.jreleaser' version '1.13.1' apply false
+}
+
+architectury {
+    minecraft = project.minecraft_version
+}
+
+allprojects {
+    group = rootProject.maven_group
+    version = rootProject.mod_version
+}
+
+subprojects {
+    apply plugin: 'dev.architectury.loom'
+    apply plugin: 'architectury-plugin'
+    apply plugin: 'maven-publish'
+
+    apply plugin: 'org.jreleaser'
+    apply plugin: 'maven-publish'
+
+    idea {
+        module {
+            downloadJavadoc = true
+        }
+    }
+
+    if (!project.name.endsWith("common")) {
+        apply plugin: 'com.github.johnrengelman.shadow'
+    } else {
+        apply plugin: 'com.github.gmazzo.buildconfig'
+    }
+
+    architectury {
+        if (!project.name.endsWith("common")) {
+            platformSetupLoomIde()
+        } else {
+            common rootProject.enabled_platforms.split(',')
+        }
+
+        if (project.name.endsWith("fabric")) {
+            fabric()
+        }
+
+        if (project.name.endsWith("neoforge")) {
+            neoForge()
+        }
+    }
+
+    loom {
+        enableTransitiveAccessWideners = true
+
+        runConfigs.each {
+            it.setIdeConfigGenerated(false)
+        }
+
+        mixin {
+            useLegacyMixinAp = false
+        }
+
+        interfaceInjection {
+            enableDependencyInterfaceInjection = true
+        }
+    }
+
+    if (!project.name.endsWith("common")) {
+        configurations {
+            common {
+                canBeResolved = true
+                canBeConsumed = false
+            }
+            compileClasspath.extendsFrom common
+            runtimeClasspath.extendsFrom common
+
+            if (project.name.endsWith("fabric")) {
+                developmentFabric.extendsFrom common
+            }
+
+            if (project.name.endsWith("neoforge")) {
+                developmentNeoForge.extendsFrom common
+            }
+
+            shadowBundle {
+                canBeResolved = true
+                canBeConsumed = false
+            }
+        }
+    }
+
+    repositories {
+        if (project.name.endsWith("neoforge")) {
+            maven {
+                name = 'NeoForged'
+                url = 'https://maven.neoforged.net/releases'
+            }
+        }
+
+        maven {
+            name = "ManasCore"
+            url = 'https://nexus.nighti.dev/repository/manasmods-public/'
+        }
+
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = "Modrinth"
+                    url = "https://api.modrinth.com/maven"
+                }
+            }
+            //forRepositories(fg.repository)
+            filter {
+                includeGroup "maven.modrinth"
+            }
+        }
+    }
+
+    dependencies {
+        minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
+        mappings loom.officialMojangMappings()
+
+        if (project.name.endsWith("common")) {
+            modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
+            modImplementation "dev.architectury:architectury:$rootProject.architectury_api_version"
+
+            modImplementation "io.github.manasmods:manascore-attribute-common:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-command-common:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-config-common:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-inventory-common:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-keybind-common:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-network-common:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-race-common:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-skill-common:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-storage-common:$rootProject.manasCoreVersion"
+        }
+
+        if (project.name.endsWith("fabric")) {
+            modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
+            modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
+            modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
+
+            common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+            shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
+
+            modImplementation "io.github.manasmods:manascore-attribute-fabric:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-command-fabric:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-config-fabric:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-inventory-fabric:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-keybind-fabric:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-network-fabric:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-race-fabric:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-skill-fabric:$rootProject.manasCoreVersion"
+            modImplementation "io.github.manasmods:manascore-storage-fabric:$rootProject.manasCoreVersion"
+        }
+
+        if (project.name.endsWith("neoforge")) {
+            neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
+            modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
+
+            common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+            shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
+
+            implementation "io.github.manasmods:manascore-attribute-neoforge:$rootProject.manasCoreVersion"
+            implementation "io.github.manasmods:manascore-command-neoforge:$rootProject.manasCoreVersion"
+            implementation "io.github.manasmods:manascore-config-neoforge:$rootProject.manasCoreVersion"
+            implementation "io.github.manasmods:manascore-inventory-neoforge:$rootProject.manasCoreVersion"
+            implementation "io.github.manasmods:manascore-keybind-neoforge:$rootProject.manasCoreVersion"
+            implementation "io.github.manasmods:manascore-network-neoforge:$rootProject.manasCoreVersion"
+            implementation "io.github.manasmods:manascore-race-neoforge:$rootProject.manasCoreVersion"
+            implementation "io.github.manasmods:manascore-skill-neoforge:$rootProject.manasCoreVersion"
+            implementation "io.github.manasmods:manascore-storage-neoforge:$rootProject.manasCoreVersion"
+        }
+    }
+
+    java {
+        withSourcesJar()
+        withJavadocJar()
+
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+    javadoc.options.addStringOption('Xdoclint:none', '-quiet')
+
+    tasks.withType(JavaCompile).configureEach {
+        it.options.release = 21
+    }
+
+    jreleaser {
+        gitRootSearch = true
+
+        signing {
+            active = 'ALWAYS'
+            armored = true
+        }
+
+        deploy {
+            maven {
+                mavenCentral {
+                    sonatype {
+                        active = 'ALWAYS'
+                        url = 'https://central.sonatype.com/api/v1/publisher'
+                        stagingRepository('build/staging-deploy')
+                    }
+                }
+            }
+        }
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId = base.archivesName.get()
+                from components.java
+
+                pom {
+                    name = "$mod_display_name"
+                    description = "An Open Source Minecraft Modding Library"
+                    url = "https://github.com/ManasMods/ManasCore"
+
+                    licenses {
+                        license {
+                            name = "GNU General Public License 3"
+                            url = "https://www.gnu.org/licenses/gpl-3.0.html"
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = 'Me'
+                            name = 'Its Me'
+                        }
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                url layout.buildDirectory.dir('staging-deploy')
+            }
+        }
+    }
+
+    tasks.publish.doFirst {
+        def dir = file(layout.buildDirectory.dir("jreleaser"))
+        dir.mkdirs()
+    }
+
+    if (!project.name.endsWith("common")) {
+        processResources {
+            def placeholders = [
+                    version              : project.version,
+                    mod_id               : "$archives_name",
+                    mod_name             : "$mod_display_name",
+                    architectury_version : architectury_api_version,
+                    minecraft_version    : minecraft_version,
+                    fabric_loader_version: fabric_loader_version,
+                    license              : "GPLv3"
+            ]
+
+            placeholders.forEach { key, value ->
+                inputs.property key, value
+            }
+
+            if (project.name.endsWith("neoforge")) {
+                filesMatching('META-INF/neoforge.mods.toml') {
+                    expand placeholders
+                }
+            } else if (project.name.endsWith("fabric")) {
+                filesMatching('fabric.mod.json') {
+                    expand placeholders
+
+                    filter { String line ->
+                        if (line.contains('"mixins":')) {
+                            var modifiedLine = "  \"accessWidener\": \"${project.mod_id}.accesswidener\",\n" + line
+
+                            return modifiedLine
+                        }
+                        return line
+                    }
+                }
+            }
+        }
+
+        shadowJar {
+            configurations = [project.configurations.shadowBundle]
+            archiveClassifier = 'dev-shadow'
+        }
+
+        remapJar {
+            input.set shadowJar.archiveFile
+        }
+    }
+}

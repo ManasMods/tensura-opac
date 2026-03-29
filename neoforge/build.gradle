@@ -1,0 +1,11 @@
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
+dependencies {
+
+}
+
+remapJar {
+    atAccessWideners.add("${project.archives_name}.accesswidener")
+}
