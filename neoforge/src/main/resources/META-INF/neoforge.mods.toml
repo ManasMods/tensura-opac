@@ -4,30 +4,30 @@ loaderVersion = "[4,)"
 license = "Insert License Here"
 
 [[mods]]
-modId = "manas_template"
+modId = "tensura_opac"
 version = "${version}"
-displayName = "ManasMods 1.21 Template"
-authors = "Me!"
+displayName = "TenSura Compat: Open Parties and Claims"
+authors = "MinhEragon"
 description = '''
-This is an example description! Tell everyone what your mod is about!
+Compatibility mod to bridge Tensura:Reincarnated and Open Parties and Claims.
 '''
 #logoFile = ""
 
-[[dependencies.manas_template]]
+[[dependencies.tensura_opac]]
 modId = "neoforge"
 type = "required"
 versionRange = "[21.1,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.manas_template]]
+[[dependencies.tensura_opac]]
 modId = "minecraft"
 type = "required"
 versionRange = "[1.21.1,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.manas_template]]
+[[dependencies.tensura_opac]]
 modId = "architectury"
 type = "required"
 versionRange = "[13.0.8,)"
@@ -35,4 +35,4 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[mixins]]
-config = "manas_template.mixins.json"
+config = "tensura_opac.mixins.json"

@@ -1,11 +1,12 @@
 {
   "required": true,
-  "package": "io.github.manasmods.template.mixin",
+  "package": "io.github.manasmods.tensura_opac.core",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
   ],
   "mixins": [
+    "MixinSubordinateHelper"
   ],
   "injectors": {
     "defaultRequire": 1

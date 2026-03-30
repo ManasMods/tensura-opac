@@ -57,7 +57,7 @@ subprojects {
         enableTransitiveAccessWideners = true
 
         runConfigs.each {
-            it.setIdeConfigGenerated(false)
+            it.runDir = "../run/$it.environment"
         }
 
         mixin {
@@ -102,11 +102,53 @@ subprojects {
         }
 
         maven {
+            name = "Tensura"
+            url = 'https://nexus.nighti.dev/repository/manasmods/'
+            credentials {
+                username System.getenv().getOrDefault("MANAS_REPO_USER", nexusUsername)
+                password System.getenv().getOrDefault("MANAS_REPO_USER_PASSWORD", nexusPassword)
+            }
+        }
+
+        maven {
             name = "ManasCore"
             url = 'https://nexus.nighti.dev/repository/manasmods-public/'
         }
 
+        maven {
+            name = 'GeckoLib'
+            url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        }
+
+        maven {
+            name = "SmartBrainLib (SBL) Maven Repo"
+            url = "https://dl.cloudsmith.io/public/tslat/sbl/maven/"
+        }
+
+        maven {
+            url = 'https://maven.minecraftforge.net/'
+        }
+
+        maven {
+            name = "Jared's maven"
+            url = "https://maven.blamejared.com/"
+        }
+
+        maven {
+            name = "ModMaven"
+            url = "https://modmaven.dev"
+        }
+
         exclusiveContent {
+            forRepository {
+                maven {
+                    url "https://cursemaven.com"
+                }
+            }
+            filter {
+                includeGroup "curse.maven"
+            }
+
             forRepository {
                 maven {
                     name = "Modrinth"
@@ -137,6 +179,15 @@ subprojects {
             modImplementation "io.github.manasmods:manascore-race-common:$rootProject.manasCoreVersion"
             modImplementation "io.github.manasmods:manascore-skill-common:$rootProject.manasCoreVersion"
             modImplementation "io.github.manasmods:manascore-storage-common:$rootProject.manasCoreVersion"
+
+            modImplementation "io.github.manasmods.tensura:common:$rootProject.tensuraVersion"
+            modImplementation "software.bernie.geckolib:geckolib-common-$rootProject.minecraft_version:$rootProject.geckolib_version"
+            modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-$rootProject.minecraft_version:$rootProject.sbl_version"
+            modImplementation "com.github.glitchfiend:TerraBlender-common:$rootProject.minecraft_version-$rootProject.terrablender_version"
+
+            modImplementation "maven.modrinth:open-parties-and-claims:fabric-$rootProject.minecraft_version-${project.opac_version}"
+            modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+            modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-common:${jei_version}")
         }
 
         if (project.name.endsWith("fabric")) {
@@ -156,6 +207,12 @@ subprojects {
             modImplementation "io.github.manasmods:manascore-race-fabric:$rootProject.manasCoreVersion"
             modImplementation "io.github.manasmods:manascore-skill-fabric:$rootProject.manasCoreVersion"
             modImplementation "io.github.manasmods:manascore-storage-fabric:$rootProject.manasCoreVersion"
+
+            modImplementation "maven.modrinth:open-parties-and-claims:fabric-$rootProject.minecraft_version-${project.opac_version}"
+            modImplementation "io.github.manasmods.tensura:fabric:$rootProject.tensuraVersion"
+            modImplementation "software.bernie.geckolib:geckolib-fabric-$rootProject.minecraft_version:$rootProject.geckolib_version"
+            modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-$rootProject.minecraft_version:$rootProject.sbl_version"
+            modImplementation "com.github.glitchfiend:TerraBlender-fabric:$rootProject.minecraft_version-$rootProject.terrablender_version"
         }
 
         if (project.name.endsWith("neoforge")) {
@@ -174,6 +231,12 @@ subprojects {
             implementation "io.github.manasmods:manascore-race-neoforge:$rootProject.manasCoreVersion"
             implementation "io.github.manasmods:manascore-skill-neoforge:$rootProject.manasCoreVersion"
             implementation "io.github.manasmods:manascore-storage-neoforge:$rootProject.manasCoreVersion"
+
+            implementation "maven.modrinth:open-parties-and-claims:neoforge-$rootProject.minecraft_version-${project.opac_version}"
+            implementation "io.github.manasmods.tensura:neoforge:$rootProject.tensuraVersion"
+            implementation "software.bernie.geckolib:geckolib-neoforge-$rootProject.minecraft_version:$rootProject.geckolib_version"
+            implementation "net.tslat.smartbrainlib:SmartBrainLib-neoforge-$rootProject.minecraft_version:$rootProject.sbl_version"
+            implementation "com.github.glitchfiend:TerraBlender-neoforge:$rootProject.minecraft_version-$rootProject.terrablender_version"
         }
     }
 
@@ -231,8 +294,8 @@ subprojects {
 
                     developers {
                         developer {
-                            id = 'Me'
-                            name = 'Its Me'
+                            id = 'MinhEragon'
+                            name = 'Minh Eragon'
                         }
                     }
                 }
@@ -275,13 +338,15 @@ subprojects {
                 filesMatching('fabric.mod.json') {
                     expand placeholders
 
-                    filter { String line ->
-                        if (line.contains('"mixins":')) {
-                            var modifiedLine = "  \"accessWidener\": \"${project.mod_id}.accesswidener\",\n" + line
+                    if (true) {
+                        filter { String line ->
+                            if (line.contains('"mixins":')) {
+                                var modifiedLine = "  \"accessWidener\": \"${project.archives_name}.accesswidener\",\n" + line
 
-                            return modifiedLine
+                                return modifiedLine
+                            }
+                            return line
                         }
-                        return line
                     }
                 }
             }
@@ -295,5 +360,14 @@ subprojects {
         remapJar {
             input.set shadowJar.archiveFile
         }
+    }
+
+    if (!project.name.endsWith("common")) {
+        task copyJar(type: Copy) {
+            from remapJar
+            into "${rootProject.projectDir}/build/"
+            rename("${project.name}", "${project.archives_name}-${project.name}")
+        }
+        build.dependsOn copyJar
     }
 }

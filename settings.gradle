@@ -7,7 +7,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'manas_template'
+rootProject.name = 'tensura_opac'
 
 include 'common'
 include 'fabric'
