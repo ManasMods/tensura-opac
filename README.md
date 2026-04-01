@@ -10,4 +10,5 @@ This Mod doesn't provide any new functionality for Minecraft itself. It requires
 - Skill Griefing disabled in claims.
 - Tensura Abilities won't apply harmful effect, energy drain, possession, spiritual damage in non-pvp claims.
 - Skill plundering (copy/steal) won't be allowed in non-pvp claims.
-- Teams created by FTB Teams will be considered ally for Tensura's Ally system.
+- Forced-teleportation and Forced-movement by Tensura Abilities won't be allowed in non-pvp claims.
+- Parties created by Open Parties and Claims will be considered ally for Tensura's Ally system.
