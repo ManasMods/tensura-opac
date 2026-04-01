@@ -6,14 +6,16 @@ import io.github.manasmods.manascore.config.api.ManasConfig;
 public class OpacConfig extends ManasConfig {
     @Comment("Should Opac party/team members to be counted as Ally for Tensura's abilities.")
     public boolean opacAllyTensura = true;
-    @Comment("Allow harmful effect from others to be inflicted in non-pvp claims.")
-    public boolean harmfulEffect = false;
     @Comment("Allow energy draining in non-pvp claims.")
     public boolean energyDrain = false;
+    @Comment("Allow mind controlling in non-pvp claims.")
+    public boolean mindControl = false;
     @Comment("Allow possession in non-pvp claims.")
     public boolean possession = false;
     @Comment("Allow spiritual damage in non-pvp claims.")
     public boolean spiritualDamage = false;
+    @Comment("Allow movement forced by others' abilities in non-pvp claims.")
+    public boolean forcedMovement = false;
     @Comment("Allow teleportation forced by others' abilities in non-pvp claims.")
     public boolean forcedTeleportation = false;
     @Comment("Allow ability plundering in non-pvp claims.")

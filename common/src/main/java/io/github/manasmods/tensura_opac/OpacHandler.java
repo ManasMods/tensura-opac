@@ -2,16 +2,12 @@ package io.github.manasmods.tensura_opac;
 
 import dev.architectury.event.EventResult;
 import io.github.manasmods.manascore.config.ConfigRegistry;
-import io.github.manasmods.manascore.skill.api.EntityEvents;
 import io.github.manasmods.tensura.event.TensuraEntityEvents;
 import io.github.manasmods.tensura.event.TensuraSkillEvents;
 import io.github.manasmods.tensura.storage.player.WarpPoint;
 import io.github.manasmods.tensura.util.ObjectSelectionHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import xaero.pac.common.claims.player.IPlayerChunkClaim;
@@ -31,30 +27,37 @@ import xaero.pac.common.server.world.ServerLevelHelper;
 
 public class OpacHandler {
     public static void init() {
-        EntityEvents.LIVING_EFFECT_ADDED.register((entity, source, changeableInstance) -> {
-            MobEffectInstance instance = changeableInstance.get();
-            if (instance == null) return EventResult.pass();
-            if (instance.getEffect().value().isBeneficial()) return EventResult.pass();
-            if (ConfigRegistry.getConfig(OpacConfig.class).harmfulEffect) return EventResult.pass();
-
-            MinecraftServer server = entity.getServer();
-            if (server == null) return EventResult.pass();
-            IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
-                    IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(server);
-
-            if (serverData.getChunkProtection().onEntityInteraction(serverData, source, source, entity, null,
-                    InteractionHand.MAIN_HAND, false, source instanceof Player, false))
-                return EventResult.interruptFalse();
-            return EventResult.pass();
-        });
-
         TensuraEntityEvents.ENERGY_DRAIN_EVENT.register((target, drainer, drainType, gainType, amount, percentage) -> {
             if (ConfigRegistry.getConfig(OpacConfig.class).energyDrain) return EventResult.pass();
             if (drainer != null && drainer != target && target.getServer() != null) {
                 IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
                         IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
-                if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, drainer, drainer, target, null,
-                        InteractionHand.MAIN_HAND, false, drainer instanceof Player, false))
+                if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, drainer, drainer, target,
+                        null, null, true, drainer instanceof Player, true))
+                    return EventResult.interruptFalse();
+            }
+            return EventResult.pass();
+        });
+
+        TensuraEntityEvents.FORCE_MOVEMENT_EVENT.register((target, mover, skill, vec3) -> {
+            if (ConfigRegistry.getConfig(OpacConfig.class).forcedMovement) return EventResult.pass();
+            if (mover != null && mover != target && target.getServer() != null) {
+                IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
+                        IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
+                if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, mover, mover, target,
+                        null, null, true, mover instanceof Player, true))
+                    return EventResult.interruptFalse();
+            }
+            return EventResult.pass();
+        });
+
+        TensuraEntityEvents.FORCE_TAME_EVENT.register((target, tamer, temporary) -> {
+            if (ConfigRegistry.getConfig(OpacConfig.class).mindControl) return EventResult.pass();
+            if (tamer != null && tamer != target && target.getServer() != null) {
+                IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
+                        IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
+                if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, tamer, tamer, target,
+                        null, null, true, tamer instanceof Player, true))
                     return EventResult.interruptFalse();
             }
             return EventResult.pass();
@@ -65,8 +68,8 @@ public class OpacHandler {
             if (possessor != null && possessor != target && target.getServer() != null) {
                 IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
                         IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
-                if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, possessor, possessor, target, null,
-                        InteractionHand.MAIN_HAND, false, possessor instanceof Player, false))
+                if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, possessor, possessor, target,
+                        null, null, true, possessor instanceof Player, true))
                     return EventResult.interruptFalse();
             }
             return EventResult.pass();
@@ -77,8 +80,8 @@ public class OpacHandler {
             if (attacker != null && attacker != target && target.getServer() != null) {
                 IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
                         IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
-                if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, attacker, attacker, target, null,
-                        InteractionHand.MAIN_HAND, true, attacker instanceof Player, false))
+                if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, attacker, attacker, target,
+                        null, null, true, false, true))
                     return EventResult.interruptFalse();
             }
             return EventResult.pass();
@@ -91,8 +94,8 @@ public class OpacHandler {
             if (teleporter != null && target.getServer() != null) {
                 IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
                         IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
-                if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, teleporter, teleporter, target, null,
-                        InteractionHand.MAIN_HAND, false, teleporter instanceof Player, false))
+                if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, teleporter, teleporter, target,
+                        null, null, true, teleporter instanceof Player, true))
                     return EventResult.interruptFalse();
             }
             return EventResult.pass();
@@ -103,8 +106,8 @@ public class OpacHandler {
             if (owner != null && owner != target && target != null && target.getServer() != null) {
                 IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>,
                         IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
-                if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, owner, owner, target, null,
-                        InteractionHand.MAIN_HAND, false, owner instanceof Player, false))
+                if (serverData != null && serverData.getChunkProtection().onEntityInteraction(serverData, owner, owner, target,
+                        null, null, true, owner instanceof Player, true))
                     return EventResult.interruptFalse();
             }
             return EventResult.pass();
